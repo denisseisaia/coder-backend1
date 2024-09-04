@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const productManager = require('../manager/productManager');
+const productManager = require('../manager/productManager'); 
+const io = require('../app'); 
 
 // Obtener todos los productos con límite opcional
 router.get('/', async (req, res) => {
@@ -17,7 +18,7 @@ router.get('/', async (req, res) => {
 router.get('/:pid', async (req, res) => {
     try {
         const products = await productManager.readProductsFile();
-        const product = products.find(p => p.id === parseInt(req.params.pid));
+        const product = products.find(p => p.id === req.params.pid);
         if (product) {
             res.json(product);
         } else {
@@ -39,12 +40,13 @@ router.post('/', async (req, res) => {
         const products = await productManager.readProductsFile();
         const newProduct = {
             ...req.body,
-            id: Date.now().toString(),
+            id: Date.now().toString(), 
             status: true,
-            thumbnails: thumbnails || []
+            thumbnails: thumbnails || [] 
         };
         products.push(newProduct);
         await productManager.writeProductsFile(products);
+        io.emit('newProduct', newProduct);
         res.status(201).json(newProduct);
     } catch (error) {
         res.status(500).json({ message: 'Error writing products file' });
@@ -57,13 +59,13 @@ router.put('/:pid', async (req, res) => {
 
     try {
         const products = await productManager.readProductsFile();
-        const productIndex = products.findIndex(p => p.id === parseInt(req.params.pid));
+        const productIndex = products.findIndex(p => p.id === req.params.pid);
         if (productIndex !== -1) {
             const updatedProduct = {
                 ...products[productIndex],
                 nombre: nombre || products[productIndex].nombre,
                 img1: img1 || products[productIndex].img1,
-                destacado: destacado || products[productIndex].destacado,
+                destacado: destacado !== undefined ? destacado : products[productIndex].destacado,
                 precio: precio || products[productIndex].precio,
                 descripcion: descripcion || products[productIndex].descripcion,
                 categoria: categoria || products[productIndex].categoria,
@@ -71,12 +73,13 @@ router.put('/:pid', async (req, res) => {
             };
             products[productIndex] = updatedProduct;
             await productManager.writeProductsFile(products);
+            io.emit('updateProducts', updatedProduct);
             res.json(updatedProduct);
         } else {
             res.status(404).json({ message: 'Product not found' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error updating product' });
+        res.status(500).json({ message: 'Error updating products file' });
     }
 });
 
@@ -84,9 +87,10 @@ router.put('/:pid', async (req, res) => {
 router.delete('/:pid', async (req, res) => {
     try {
         let products = await productManager.readProductsFile();
-        products = products.filter(p => p.id !== parseInt(req.params.pid));
+        products = products.filter(p => p.id !== req.params.pid);
         await productManager.writeProductsFile(products);
-        res.status(204).send();
+        io.emit('deleteProduct', req.params.pid);
+        res.status(200).json({ message: 'Product deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting product' });
     }
