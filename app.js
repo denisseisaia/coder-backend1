@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 const PORT = 8080;
 
-// Configura Handlebars
+// Configuración de Handlebars
 const handlebars = exphbs.create({
     defaultLayout: 'main',
     extname: '.handlebars',
@@ -20,9 +20,11 @@ app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); 
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Rutas para productos
 const productsRouter = require('./routes/products');
@@ -53,11 +55,10 @@ app.get('/realTimeProducts', async (req, res) => {
     }
 });
 
-// Configura WebSocket
+// Configuración de WebSocket
 io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado');
 
-    // Evento para recibir un nuevo producto
     socket.on('newProduct', async (product) => {
         try {
             const products = await productManager.readProductsFile();
@@ -69,7 +70,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Evento para recibir una solicitud de eliminación de producto
     socket.on('deleteProduct', async (productId) => {
         try {
             let products = await productManager.readProductsFile();
@@ -91,4 +91,4 @@ server.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
-module.exports = io; 
+module.exports = io;
