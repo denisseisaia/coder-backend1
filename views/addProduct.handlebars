@@ -1,0 +1,33 @@
+<header></header>
+    <h1>Agregar nuevo producto</h1>
+</header>
+<main>
+    <form id="addProductForm" action="/api/products" method="POST">
+        <label for="title">Nombre:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" name="description" required>
+
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" required>
+
+        <label for="img">Imagen URL:</label>
+        <input type="text" id="img" name="img">
+
+        <label for="code">Codigo:</label>
+        <input type="text" id="code" name="code" required>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" required>
+
+        <label for="category">Categoria:</label>
+        <input type="text" id="category" name="category" required>
+
+        <label for="thumbnails">Miniatura (separado por coma):</label>
+        <input type="text" id="thumbnails" name="thumbnails">
+
+        <button type="submit">Agregar producto</button>
+    </form>
+    <a href="/" class="pointer songoro" id="add2Cart">Volver al Inicio</a>
+</main>

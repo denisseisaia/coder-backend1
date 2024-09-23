@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/css/style.css">
+<h1  class="tipografia">Resumen de carrito</h1>
+
+{{#if cart}}
+<div class="cartsDetails1">
+    <h2 class="cart-id2">Carrito ID: {{cart._id}}</h2>
+    <p class="total-products2">Total Productos: {{cart.products.length}}</p>
+    <ul class="products-list2">
+        {{#each cart.products}}
+        <hr>
+        <li class="product-item2">
+            <p class="product-title2">Nombre: {{this.product.title}}</p>
+            <p class="product-quantity2">Cantidad: {{this.quantity}}</p>
+            <p class="product-price2">Precio: ${{this.product.price}}</p>
+            <p class="product-id2">ID producto: {{this.product._id}}</p>
+        </li>
+        {{/each}}
+    </ul>
+    <hr>
+    <p class="cart-total2">Precio total: ${{calculateTotalPrice cart.products}}</p>
+    <hr>
+</div>
+<br>
+{{else}}
+<p class="no-products2">El carrito esta vacío.</p>
+{{/if}}
+
+<a href="/carts" class="btnBack2Carts" id="add2Cart">Volver a comprar</a>

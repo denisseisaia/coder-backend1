@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Agenda Semanal",
+    "description": "Agenda de semana vista. Caracteristicas: A5 (21cm x 15cm), tapa dura forrada en papel laminado, anillado con anillo metálico, 200 páginas de papel reciclado 75 gr. Contenido: Portada, Calendario 2025-2026, Calendario anual para completar, Contraseñas, Tracker de Hábitos, Planners mensuales, Interior Semana vista, Hoja de gastos y Notas.",
+    "price": 18000,
+    "img": "/img/id1.jpg",
+    "code": "CP001",
+    "stock": 100,
+    "category": "papel",
+    "thumbnail": "/img/id1_thumb.jpg"
+  },
+  {
+    "title": "Agenda Diaria",
+    "description": "Agenda de dia por página. Caracteristicas: A5 (21cm x 15cm), tapa dura forrada en papel laminado, anillado con anillo metálico, 280 páginas de papel reciclado 75 gr. Contenido: Portada, Calendario 2025-2026, Calendario anual para completar, Contraseñas, Tracker de Hábitos, Planners mensuales, Interior un dia por página, Hoja de gastos y Notas.",
+    "price": 22000,
+    "img": "/img/id2.jpg",
+    "code": "CP002",
+    "stock": 100,
+    "category": "papel",
+    "thumbnail": "/img/id2_thumb.jpg"
+  },
+  {
+    "title": "Cuaderno Rayado",
+    "description": "Cuaderno de notas Rayado. Caracteristicas: A5 (21cm x 15cm), tapa dura forrada en papel laminado, anillado con anillo metálico, 80 páginas de papel reciclado 75 gr. Contenido: Portada y páginas rayadas.",
+    "price": 12000,
+    "img": "/img/id3.jpg",
+    "code": "CP003",
+    "stock": 100,
+    "category": "papel",
+    "thumbnail": "/img/id3_thumb.jpg"
+  },
+  {
+    "title": "Cuaderno Liso",
+    "description": "Cuaderno de notas Liso. Caracteristicas: A5 (21cm x 15cm), tapa dura forrada en papel laminado, anillado con anillo metálico, 80 páginas de papel reciclado 75 gr. Contenido: Portada y páginas lisas.",
+    "price": 12000,
+    "img": "/img/id4.jpg",
+    "code": "CP004",
+    "stock": 100,
+    "category": "papel",
+    "thumbnail": "/img/id4_thumb.jpg"
+  },
+  {
+    "title": "Planner Diario",
+    "description": "Planner diario digital. Características: archivo para utilizar en celular, tablet o computadora. Se abre a traves de aplicaciones como Goodnotes 5 y Notability. Contenido: Más de 680 páginas con hipervinculos, organizaacion diaria, semanal, trimestral y anual.",
+    "price": 20000,
+    "img": "/img/id5.png",
+    "code": "CP005",
+    "stock": 100,
+    "category": "digital",
+    "thumbnail": "/img/id5_thumb.png"
+  },
+  {
+    "title": "Planner Semanal",
+    "description": "Planner semanal digital. Características: archivo para utilizar en celular, tablet o computadora. Se abre a traves de aplicaciones como Goodnotes 5 y Notability. Contenido: Más de 380 páginas con hipervinculos, semanal, trimestral y anual.",
+    "price": 18000,
+    "img": "/img/id6.png",
+    "code": "CP006",
+    "stock": 100,
+    "category": "digital",
+    "thumbnail": "/img/id6_thumb.png"
+  }
+]

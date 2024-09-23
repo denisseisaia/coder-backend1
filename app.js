@@ -1,94 +1,98 @@
-const express = require('express');
-const path = require('path');
-const { Server } = require('socket.io');
-const http = require('http');
-const exphbs = require('express-handlebars');
-const productManager = require('./manager/productManager');
-const cartManager = require('./manager/cartManager');
+import express from 'express';
+import exphbs from 'express-handlebars';
+import productsRouter from './routes/productsRouter.js';
+import cartsRouter from './routes/cartsRouter.js';
+import viewsRouter from './routes/viewsRouter.js';
+import http from 'http';
+import { Server } from 'socket.io';
+import './database.js';
+import ProductManager from './dao/db/productManager-db.js';
+import bodyParser from 'body-parser'; // Importar body-parser usando ES Modules
 
+const PORT = process.env.PORT || 8080;
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-const PORT = 8080;
+const httpServer = http.createServer(app);
+const io = new Server(httpServer);
 
 // Configuración de Handlebars
-const handlebars = exphbs.create({
+const hbs = exphbs.create({
     defaultLayout: 'main',
-    extname: '.handlebars',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    }
 });
-app.engine('handlebars', handlebars.engine);
+
+// Registrar el helper para calcular el precio total
+hbs.handlebars.registerHelper('calculateTotalPrice', function (products) {
+    let total = 0;
+    products.forEach(product => {
+        total += product.quantity * product.product.price;
+    });
+    return total;
+});
+
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', './views');
 
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(express.json());
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static('./public'));
 
-// Rutas para productos
-const productsRouter = require('./routes/products');
+// Middleware para manejar JSON y datos del cuerpo de las solicitudes
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Montar routers de API
 app.use('/api/products', productsRouter);
-
-// Rutas para carritos
-const cartsRouter = require('./routes/carts');
 app.use('/api/carts', cartsRouter);
 
-// Rutas para vistas
-app.get('/', async (req, res) => {
-    try {
-        const products = await productManager.readProductsFile();
-        res.render('home', { products });
-    } catch (error) {
-        console.error('Error fetching products:', error); 
-        res.status(500).json({ message: 'Error fetching products' });
-    }
-});
+// Montar rutas de vistas
+app.use('/', viewsRouter);
 
-app.get('/realTimeProducts', async (req, res) => {
-    try {
-        const products = await productManager.readProductsFile();
-        res.render('realTimeProducts', { products });
-    } catch (error) {
-        console.error('Error fetching products:', error); 
-        res.status(500).json({ message: 'Error fetching products' });
-    }
-});
+app.use('/favicon.ico', (req, res) => res.status(204).end());
 
-// Configuración de WebSocket
+
+// Utiliza el router de carritos
+app.use(cartsRouter);
+
+// Manejo de WebSocket para actualizaciones en tiempo real
 io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado');
+    console.log('New client connected');
 
-    socket.on('newProduct', async (product) => {
+    socket.on('sortProducts', async (data) => {
+        const { sort } = data;
         try {
-            const products = await productManager.readProductsFile();
-            products.push(product);
-            await productManager.writeProductsFile(products);
-            io.emit('updateProducts', products);
+            const products = await ProductManager.getProducts();
+            const sortedProducts = products.sort((a, b) => {
+                if (sort === 'asc') {
+                    return a.price - b.price;
+                } else if (sort === 'desc') {
+                    return b.price - a.price;
+                } else {
+                    return 0;
+                }
+            });
+            socket.emit('updateProducts', sortedProducts);
         } catch (error) {
-            console.error('Error adding product:', error);
-        }
-    });
-
-    socket.on('deleteProduct', async (productId) => {
-        try {
-            let products = await productManager.readProductsFile();
-            products = products.filter(p => p.id !== productId);
-            await productManager.writeProductsFile(products);
-            io.emit('updateProducts', products);
-        } catch (error) {
-            console.error('Error deleting product:', error);
+            console.error('Error sorting products:', error);
+            socket.emit('updateProducts', { error: 'Error al obtener productos' });
         }
     });
 
     socket.on('disconnect', () => {
-        console.log('Cliente desconectado');
+        console.log('Client disconnected');
     });
 });
 
-// Iniciar el servidor
-server.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+// Iniciar servidor
+httpServer.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-module.exports = io;
+// Manejo de rutas no encontradas
+app.get('*', (req, res) => {
+    res.status(400).send('Route not found');
+});

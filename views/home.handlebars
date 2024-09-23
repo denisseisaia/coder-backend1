@@ -1,7 +1,22 @@
-<h2>Bienvenido a la página de inicio</h2>
-<p>Aquí está una lista de productos:</p>
-<ul>
-    {{#each products}}
-        <li>{{nombre}} - {{precio}}</li>
-    {{/each}}
-</ul>
+<h1 class="tipografia">Che Pistacho</h1>
+<div class="memin01">
+    <div class="button-container01">
+        <!-- Botón 1 -->
+        <div class="button-wrapper01">
+            <button class="main-button01">Productos</button>
+            <ul class="options01">
+                <li><button onclick="window.open('api/products')">Código</button></li>
+                <li><button onclick="window.open('/products')">En vivo</button></li>
+            </ul>
+        </div>
+
+        <!-- Botón 2 -->
+        <div class="button-wrapper01">
+            <button class="main-button01">Carrito</button>
+            <ul class="options01">
+                <li><button onclick="window.open('api/carts', '_blank')">Código</button></li>
+                <li><button onclick="window.open('/carts', '_blank')">En vivo</button></li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,33 +1,17 @@
-<h2>Productos en Tiempo Real</h2>
-<ul id="productList">
-    {{#each products}}
-        <li id="product-{{id}}">
-            <img src="{{img1}}" alt="{{nombre}}" style="width:100px;">
-            <strong>{{nombre}}</strong> - ${{precio}}
-            <p>{{descripcion}}</p>
-            <p>Categoría: {{categoria}}</p>
-            {{#if thumbnails}}
-                <div>
-                    {{#each thumbnails}}
-                        <img src="{{this}}" alt="Thumbnail" style="width:50px;"/>
-                    {{/each}}
-                </div>
-            {{/if}}
-            <button onclick="deleteProduct('{{id}}')">Eliminar</button>
-        </li>
-    {{/each}}
-</ul>
-
-<form id="productForm">
-    <input type="text" id="name" placeholder="Nombre" required>
-    <input type="text" id="img1" placeholder="Imagen URL" required>
-    <input type="text" id="destacado" placeholder="Destacado (SI/NO)" required>
-    <input type="number" id="precio" placeholder="Precio" required>
-    <textarea id="descripcion" placeholder="Descripción" required></textarea>
-    <input type="text" id="categoria" placeholder="Categoría" required>
-    <button type="submit">Agregar Producto</button>
-</form>
-
+<h1 class="tipografia">Real-Time ProductOs</h1>
+<a href="/" class="pointer songoro" id="add2Cart">Volver al Inicio</a>
+<div id="product-list"></div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/realTimeProducts.js" defer></script>
+<script>
+    const socket = io();
+    const productList = document.getElementById('product-list');
 
+    socket.on('updateProducts', (products) => {
+        productList.innerHTML = products.map(product => 
+            `<div>${product.title} - ${product.price}</div>`
+        ).join('');
+    });
+
+    // Example of emitting an event
+    socket.emit('sortProducts', { sort: 'asc' });
+</script>
